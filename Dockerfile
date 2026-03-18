@@ -2,6 +2,13 @@ FROM n8nio/n8n:latest
 
 USER root
 
-RUN apk update && apk add --no-cache texlive-full
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    texlive-latex-base \
+    texlive-fonts-recommended \
+    texlive-latex-extra \
+    texlive-xetex && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 USER node
