@@ -2,13 +2,10 @@ FROM n8nio/n8n:latest
 
 USER root
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    texlive-latex-base \
-    texlive-fonts-recommended \
-    texlive-latex-extra \
-    texlive-xetex && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# Install dependencies using the correct package manager for n8n's base
+RUN npm install -g --unsafe-perm pdflatex-wrapper || \
+    (curl -L https://github.com/scottkosty/install-tl-ubuntu/raw/master/install-tl-ubuntu && \
+    chmod +x install-tl-ubuntu && \
+    ./install-tl-ubuntu)
 
 USER node
