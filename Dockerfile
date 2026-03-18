@@ -1,11 +1,22 @@
-FROM n8nio/n8n:latest
+FROM node:18-bullseye
 
-USER root
+# Install n8n
+RUN npm install -g n8n
 
-# Install dependencies using the correct package manager for n8n's base
-RUN npm install -g --unsafe-perm pdflatex-wrapper || \
-    (curl -L https://github.com/scottkosty/install-tl-ubuntu/raw/master/install-tl-ubuntu && \
-    chmod +x install-tl-ubuntu && \
-    ./install-tl-ubuntu)
+# Install LaTeX
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    texlive-latex-base \
+    texlive-fonts-recommended \
+    texlive-latex-extra \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-USER node
+# Set working directory
+WORKDIR /data
+
+# Expose n8n port
+EXPOSE 5678
+
+# Start n8n
+CMD ["n8n"]
